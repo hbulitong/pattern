@@ -19,4 +19,9 @@ public class TestController {
     public String sayHello(){
         return "hello";
     }
+
+    @RequestMapping(value = "/hello/merge")
+    public String sayHello1(){
+        return "hello";
+    }
 }
