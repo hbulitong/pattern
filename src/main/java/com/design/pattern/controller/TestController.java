@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
+    /**
+     * test abc
+     * @return
+     */
     @RequestMapping(value = "/hello")
     public String sayHello(){
         return "hello";
