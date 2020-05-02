@@ -30,6 +30,7 @@ public class Test {
         //return JSONObject.parseObject(json, new TypeReference<ResponseEntity<Map<String, T>>>(){});
     }
 
+
     public static void main(String[] args) throws  Exception{
         //getRoushan
         Item<String> item=new Item<>();
@@ -72,50 +73,11 @@ public class Test {
         log.info("hold");
     }
 
-    public static Object transfer(String req,String className,String methodName ) throws  Exception{
-        Class clazz=Class.forName(className);
-        Method method=clazz.getDeclaredMethod(methodName);
-        Queue<Class> queue=new LinkedList<>();
-        Type type=method.getGenericReturnType();
-        if(type instanceof ParameterizedType){
-            queue.add((Class)((ParameterizedType) type).getRawType());
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            Type type1 =parameterizedType.getActualTypeArguments()[0];
-
-            while(type1 instanceof ParameterizedType ){
-                queue.add((Class)((ParameterizedType) type1).getRawType());
-                Type type2=((ParameterizedType) type1).getActualTypeArguments()[0];
-                type1=type2;
-            }
-            queue.add((Class)type1);
-        }else{  //没有泛型
-            return JSON.parseObject(req,(Class)type);
-        }
-        log.info(String.valueOf(queue.size()));
-        log.info("hold...");
-        Class classes[]=new Class[queue.size()];
-        for(int i=0;i<classes.length;i++){
-            classes[i]=queue.poll();
-        }
-        //这里不用TypeReference方式，直接用class对象来处理
-
-        ParameterizedTypeImpl beforeType = null;
-        if (classes.length!=0){
-            //支持多级泛型的解析
-            for (int i = classes.length-1; i >0 ; i--) {
-                beforeType = new ParameterizedTypeImpl(new Type[]{beforeType == null? classes[i]:beforeType}, null, classes[i - 1]);
-            }
-        }
-
-        return JSON.parseObject(req,beforeType);
-
-    }
     //不能直接拿来用
     //Exception in thread "main" java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl cannot be cast to com.alibaba.fastjson.util.ParameterizedTypeImpl
     public static Object transfer1(String req,String className,String methodName ) throws  Exception{
         Class clazz=Class.forName(className);
         Method method=clazz.getDeclaredMethod(methodName);
-        Queue<Class> queue=new LinkedList<>();
         Type type=method.getGenericReturnType();
         if(type instanceof ParameterizedType){
             ParameterizedType type1=(ParameterizedType) type;
@@ -124,9 +86,5 @@ public class Test {
         }else{  //没有泛型
             return JSON.parseObject(req,(Class)type);
         }
-
-
-
-
     }
 }
